@@ -323,10 +323,15 @@ then
   if test "$MUMPS" != ""
   then
     # Check all files needed
-    AC_CHECK_FILES( $MUMPS_INC/dmumps_c.h $MUMPS_LIB/libdmumps.a $MUMPS_LIB/libmumps_common.a $MUMPS_LIB/libpord.a $MUMPS_LIB/libscalapack.a $MUMPS_LIB/libblacs.a $MUMPS_LIB/libparmetis.a $MUMPS_LIB/libmetis.a $MUMPS_LIB/libptscotch.a $MUMPS_LIB/libptesmumps.a, ,[ MUMPS="" ])
+    AC_CHECK_FILES( $MUMPS_INC/dmumps_c.h $MUMPS_LIB/libdmumps.a $MUMPS_LIB/libmumps_common.a $MUMPS_LIB/libpord.a $MUMPS_LIB/libscalapack.a, ,[ MUMPS="" ])
+    AC_CHECK_FILES( $MUMPS_LIB/libblacs.a $MUMPS_LIB/libparmetis.a $MUMPS_LIB/libmetis.a,[ METIS="1" ],[ METIS="" ])
+    AC_CHECK_FILES( $MUMPS_LIB/libptscotch.a $MUMPS_LIB/libptesmumps.a,[ PTSCOTCH="1" ],[ PTSCOTCH="" ])
   fi
   
   if test "$MUMPS" == ""
+  then
+    echo " -> MUMPS not found"
+  elif test [ "$METIS" == "" -a "$PTSCOTCH" == "" ]
   then
     echo " -> MUMPS not found"
   else
@@ -335,7 +340,15 @@ then
     echo "   Libraries: $MUMPS_LIB"
     
     EXTRA_INCS="$EXTRA_INCS -I$MUMPS_INC"
-    EXTRA_LIBS="$EXTRA_LIBS -L$MUMPS_LIB -ldmumps -lmumps_common -lpord -lscalapack -lblacs -lparmetis -lmetis -lptscotch -lptesmumps"
+    EXTRA_LIBS="$EXTRA_LIBS -L$MUMPS_LIB -ldmumps -lmumps_common -lpord -lscalapack"
+    if test "$METIS" != ""
+    then
+      EXTRA_LIBS="$EXTRA_LIBS -lblacs -lparmetis -lmetis"
+    fi
+    if test "$PTSCOTECH" != ""
+    then
+      EXTRA_LIBS="$EXTRA_LIBS -lptscotch -lptesmumps"
+    fi
     CXXFLAGS="$CXXFLAGS -DBOUT_HAS_MUMPS"
   fi
   echo
