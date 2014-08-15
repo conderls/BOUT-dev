@@ -722,8 +722,11 @@ const FieldPerp LaplacePetsc::solve(const FieldPerp &b, const FieldPerp &x0) {
   VecAssemblyEnd(xs);
 
   // Configure Linear Solver               
+#ifdef BOUT_HAS_PETSC_3_5
+  KSPSetOperators( ksp,MatA,MatA);
+#else
   KSPSetOperators( ksp,MatA,MatA,DIFFERENT_NONZERO_PATTERN );
-
+#endif
   PC pc;
  
   if(direct) {

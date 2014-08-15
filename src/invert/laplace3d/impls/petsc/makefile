@@ -5,6 +5,6 @@ SOURCEC         = petsc_laplace3d.cxx
 SOURCEH         = petsc_laplace3d.hxx
 TARGET          = lib
 
-CXXFLAGS +=-g
+#CXXFLAGS +=-g
 
 include $(BOUT_TOP)/make.config
